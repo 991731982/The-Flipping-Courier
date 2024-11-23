@@ -6,6 +6,8 @@ public class ShootingMechanic : MonoBehaviour
     public GameObject projectilePrefab;  // 圆球的预制体
     public float projectileSpeed = 20f; // 圆球飞行速度
     public Transform shootPoint;        // 发射点
+    public int maxAmmo = 30;            // 最大备弹量
+    private int currentAmmo;            // 当前剩余子弹量
 
     [Header("Crosshair Settings")]
     public Texture2D crosshairTexture;  // 准星贴图
@@ -25,6 +27,9 @@ public class ShootingMechanic : MonoBehaviour
         {
             Debug.LogError("Shoot point not assigned!");
         }
+
+        // 初始化子弹数量
+        currentAmmo = maxAmmo;
     }
 
     void Update()
@@ -36,7 +41,14 @@ public class ShootingMechanic : MonoBehaviour
     {
         if (Input.GetMouseButtonDown(0)) // 左键按下时射击
         {
-            ShootProjectile();
+            if (currentAmmo > 0)
+            {
+                ShootProjectile();
+            }
+            else
+            {
+                Debug.Log("Out of ammo!"); // 子弹耗尽提示
+            }
         }
     }
 
@@ -59,6 +71,9 @@ public class ShootingMechanic : MonoBehaviour
         {
             rb.velocity = shootDirection * projectileSpeed;
         }
+
+        // 减少子弹数量
+        currentAmmo--;
     }
 
     private void OnGUI()
@@ -70,6 +85,14 @@ public class ShootingMechanic : MonoBehaviour
             float yMin = (Screen.height - crosshairSize) / 2;
             GUI.DrawTexture(new Rect(xMin, yMin, crosshairSize, crosshairSize), crosshairTexture);
         }
+
+        // 显示当前剩余子弹数量
+        GUIStyle ammoStyle = new GUIStyle
+        {
+            fontSize = 24,
+            normal = { textColor = Color.white }
+        };
+        GUI.Label(new Rect(10, 10, 200, 50), $"Ammo: {currentAmmo}/{maxAmmo}", ammoStyle);
     }
 
     private void OnDrawGizmos()

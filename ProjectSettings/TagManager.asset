@@ -9,6 +9,7 @@ TagManager:
   - Draggable
   - Box
   - float
+  - Checkpoint
   layers:
   - Default
   - TransparentFX
