@@ -3,16 +3,14 @@
 public class ShootingMechanic : MonoBehaviour
 {
     [Header("Shooting Settings")]
-    public GameObject projectilePrefab;  // 普通子弹预制体
-    public GameObject supplyBulletPrefab; // 补给子弹预制体
-    public GameObject healBulletPrefab; // 恢复子弹预制体
-    public GameObject spawnEnemyBulletPrefab; // 生成敌人的子弹预制体
-    public float projectileSpeed = 20f; // 子弹飞行速度
+    public GameObject projectilePrefab;  // 圆球的预制体
+    public GameObject supplyBulletPrefab;
+    public GameObject EnemyBulletPrefab;
+    public GameObject healBulletPrefab; // 恢复子弹的预制体
+    public float projectileSpeed = 20f; // 圆球飞行速度
     public Transform shootPoint;        // 发射点
     public int maxAmmo = 30;            // 最大备弹量
     private int currentAmmo;            // 当前剩余子弹量
-
-    private int specialBulletIndex = 0; // 右键轮流发射的子弹索引
 
     [Header("Crosshair Settings")]
     public Texture2D crosshairTexture;  // 准星贴图
@@ -44,12 +42,11 @@ public class ShootingMechanic : MonoBehaviour
 
     private void HandleShooting()
     {
-        // 左键发射普通子弹
-        if (Input.GetMouseButtonDown(0))
+        if (Input.GetMouseButtonDown(0)) // 左键发射普通子弹
         {
             if (currentAmmo > 0)
             {
-                ShootProjectile(projectilePrefab);
+                ShootProjectile(projectilePrefab); // 发射普通子弹
             }
             else
             {
@@ -57,63 +54,30 @@ public class ShootingMechanic : MonoBehaviour
             }
         }
 
-        // 右键轮流发射三种特殊子弹
-        if (Input.GetMouseButtonDown(1))
+        if (Input.GetMouseButtonDown(1)) // 右键发射补给子弹
         {
-            FireSpecialBullet();
+            ShootProjectile(EnemyBulletPrefab); // 发射补给子弹
         }
-    }
-
-    private void FireSpecialBullet()
-    {
-        // 根据索引选择特殊子弹
-        GameObject selectedBullet = null;
-
-        switch (specialBulletIndex)
-        {
-            case 0:
-                selectedBullet = supplyBulletPrefab; // 补给子弹
-                break;
-            case 1:
-                selectedBullet = healBulletPrefab; // 恢复子弹
-                break;
-            case 2:
-                selectedBullet = spawnEnemyBulletPrefab; // 生成敌人的子弹
-                break;
-        }
-
-        if (selectedBullet != null)
-        {
-            ShootProjectile(selectedBullet);
-        }
-
-        // 循环切换索引
-        specialBulletIndex = (specialBulletIndex + 1) % 3;
     }
 
     private void ShootProjectile(GameObject bulletPrefab)
     {
         if (bulletPrefab == null || shootPoint == null)
         {
-            Debug.LogWarning("Bullet prefab or shoot point is not assigned!");
+            Debug.LogWarning("Projectile Prefab or Shoot Point is missing!");
             return;
         }
 
-        // 实例化子弹
-        Vector3 offset = shootPoint.forward * 0.5f; // 偏移量，避免子弹生成在玩家内部
-        GameObject projectile = Instantiate(bulletPrefab, shootPoint.position + offset, Quaternion.identity);
-
+        // 创建子弹
+        GameObject projectile = Instantiate(bulletPrefab, shootPoint.position, Quaternion.identity);
         Rigidbody rb = projectile.GetComponent<Rigidbody>();
+
         if (rb != null)
         {
-            rb.velocity = shootPoint.forward * projectileSpeed;
-        }
-        else
-        {
-            Debug.LogWarning("No Rigidbody attached to the projectile!");
+            rb.velocity = -transform.forward * projectileSpeed;
         }
 
-        // 减少普通子弹的弹药（特殊子弹不消耗）
+        // 减少弹药（仅普通子弹减少）
         if (bulletPrefab == projectilePrefab)
         {
             currentAmmo--;
@@ -139,10 +103,22 @@ public class ShootingMechanic : MonoBehaviour
         GUI.Label(new Rect(10, 10, 200, 50), $"Ammo: {currentAmmo}/{maxAmmo}", ammoStyle);
     }
 
+    private void OnDrawGizmos()
+    {
+        if (shootPoint != null)
+        {
+            // 在 Scene 视图中绘制发射方向
+            Gizmos.color = Color.red;
+            Gizmos.DrawLine(shootPoint.position, shootPoint.position + -transform.forward * 10f); // 绘制方向线
+        }
+    }
+
     public void AddAmmo(int amount)
     {
         currentAmmo += amount;
-        currentAmmo = Mathf.Clamp(currentAmmo, 0, maxAmmo); // 确保弹药量在合理范围
+
+        // 确保弹药量不会超过最大值
+        currentAmmo = Mathf.Clamp(currentAmmo, 0, maxAmmo);
         Debug.Log($"Ammo replenished! Current Ammo: {currentAmmo}/{maxAmmo}");
     }
 }
