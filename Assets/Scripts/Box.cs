@@ -1,58 +1,80 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class Box : MonoBehaviour
 {
     public int hitsToDestroy = 3;         // Hits required to destroy the box
-    public float fallAmount = 0.1f;       // Amount the box moves down each hit
-    public GameObject smallCubePrefab;    // Prefab for the small cube to spawn
+    public float fallAmount = 0.1f;      // Amount the box moves down each hit
+    public GameObject smallCubePrefab;   // Prefab for the small cube to spawn
+    public Vector3 spawnOffset = new Vector3(0, 1, 0); // Offset for spawning the small cube
 
     public int currentHits = 0;          // Track current hits
-    private bool canRegisterHit = true;   // Control when hits can be registered
+    private bool canRegisterHit = true;  // Control when hits can be registered
 
     void Start()
     {
         // Ensure the box has a Rigidbody and set it to kinematic (so it doesn't move, but still collides)
         Rigidbody rb = GetComponent<Rigidbody>();
-        rb.isKinematic = true;  // This prevents the box from moving due to physics, but still allows collisions.
+        if (rb == null)
+        {
+            rb = gameObject.AddComponent<Rigidbody>();
+        }
+        rb.isKinematic = true;
     }
 
     private void OnCollisionEnter(Collision collision)
     {
-        // Check if the object colliding is tagged as "Weight" and if hits can be registered
         if (collision.gameObject.CompareTag("Weight") && canRegisterHit)
         {
-            // Get the contact point and its normal
-            ContactPoint contact = collision.contacts[0];
-            print(Vector3.Dot(contact.normal, transform.up));
-
-            // Check if the collision is from the top
-            if (collision.relativeVelocity.y < 0 && Vector3.Dot(contact.normal, transform.up) > 0.9f)
+            foreach (ContactPoint contact in collision.contacts)
             {
-                // Register a hit and start the cooldown
-                currentHits++;
-                Debug.Log("Weight hit the box from the top! Current hits: " + currentHits);
-
-                // Move the box down by the fall amount
-                transform.position -= new Vector3(0, fallAmount, 0);
-
-                // Check if the box should spawn the small cube
-                if (currentHits >= hitsToDestroy)
+                // 强制调整法线方向：将负的法线点积值转为正值
+                float dotProduct = Vector3.Dot(contact.normal, transform.up);
+                if (dotProduct < 0)
                 {
-                    Vector3 spawnPosition = transform.position + new Vector3(0, transform.localScale.y / 2, 0);
-                    Instantiate(smallCubePrefab, spawnPosition, Quaternion.identity);
-                    Debug.Log("Key spawned on top of the box!");
+                    dotProduct = -dotProduct;
                 }
 
-                // Start cooldown
-                StartCoroutine(HitCooldown());
+                Debug.Log($"Contact normal: {contact.normal}, Adjusted Dot product: {dotProduct}, Relative velocity Y: {collision.relativeVelocity.y}");
+
+                // 判断是否为顶部碰撞
+                if (collision.relativeVelocity.y < 0 && dotProduct > 0.4f) // 放宽条件
+                {
+                    currentHits++;
+                    Debug.Log("Weight hit the box from the top! Current hits: " + currentHits);
+
+                    // 向下移动箱子
+                    transform.position -= new Vector3(0, fallAmount, 0);
+
+                    // 如果达到受击次数
+                    if (currentHits >= hitsToDestroy)
+                    {
+                        SpawnSmallCube(); // 生成小立方体
+                        Destroy(gameObject); // 销毁箱子
+                        return; // 退出循环，避免多次处理
+                    }
+
+                    // 冷却计时
+                    StartCoroutine(HitCooldown());
+                    return; // 退出循环，避免多次处理
+                }
             }
-            else
-            {
-                Debug.Log("Weight hit the side or at a low angle, not counted.");
-            }
+
+            // 如果没有符合条件的碰撞点
+            Debug.Log("Weight hit the side or at a low angle, not counted.");
         }
+    }
+
+    private void SpawnSmallCube()
+    {
+        // 使用偏移量计算生成位置
+        Vector3 spawnPosition = transform.position + spawnOffset;
+
+        // 实例化小立方体预制体
+        Instantiate(smallCubePrefab, spawnPosition, Quaternion.identity);
+
+        Debug.Log("Small cube spawned!");
     }
 
     // Coroutine to handle the cooldown period between hits
