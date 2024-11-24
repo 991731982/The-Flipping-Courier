@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using TMPro; // 引入 TextMeshPro 的命名空间
 
 public class ShootingMechanic : MonoBehaviour
 {
@@ -14,9 +15,10 @@ public class ShootingMechanic : MonoBehaviour
 
     private int specialBulletIndex = 0; // 右键轮流发射的子弹索引
 
-    [Header("Crosshair Settings")]
+    [Header("UI Settings")]
     public Texture2D crosshairTexture;  // 准星贴图
     public float crosshairSize = 32f;   // 准星大小
+    public TextMeshProUGUI ammoText;    // TMP 文本，用于显示弹药数量
 
     private Camera mainCamera;
 
@@ -35,6 +37,7 @@ public class ShootingMechanic : MonoBehaviour
 
         // 初始化子弹数量
         currentAmmo = maxAmmo;
+        UpdateAmmoText(); // 初始化显示弹药数量
     }
 
     void Update()
@@ -50,6 +53,7 @@ public class ShootingMechanic : MonoBehaviour
             if (currentAmmo > 0)
             {
                 ShootProjectile(projectilePrefab);
+                UpdateAmmoText(); // 更新弹药数量显示
             }
             else
             {
@@ -120,6 +124,26 @@ public class ShootingMechanic : MonoBehaviour
         }
     }
 
+    public void AddAmmo(int amount)
+    {
+        currentAmmo += amount;
+        currentAmmo = Mathf.Clamp(currentAmmo, 0, maxAmmo); // 确保弹药量在合理范围
+        UpdateAmmoText(); // 更新弹药数量显示
+        Debug.Log($"Ammo replenished! Current Ammo: {currentAmmo}/{maxAmmo}");
+    }
+
+    private void UpdateAmmoText()
+    {
+        if (ammoText != null)
+        {
+            ammoText.text = $"{currentAmmo}/{maxAmmo}";
+        }
+        else
+        {
+            Debug.LogWarning("Ammo Text (TMP) is not assigned!");
+        }
+    }
+
     private void OnGUI()
     {
         // 显示准星
@@ -129,20 +153,5 @@ public class ShootingMechanic : MonoBehaviour
             float yMin = (Screen.height - crosshairSize) / 2;
             GUI.DrawTexture(new Rect(xMin, yMin, crosshairSize, crosshairSize), crosshairTexture);
         }
-
-        // 显示当前剩余子弹数量
-        GUIStyle ammoStyle = new GUIStyle
-        {
-            fontSize = 24,
-            normal = { textColor = Color.white }
-        };
-        GUI.Label(new Rect(10, 10, 200, 50), $"Ammo: {currentAmmo}/{maxAmmo}", ammoStyle);
-    }
-
-    public void AddAmmo(int amount)
-    {
-        currentAmmo += amount;
-        currentAmmo = Mathf.Clamp(currentAmmo, 0, maxAmmo); // 确保弹药量在合理范围
-        Debug.Log($"Ammo replenished! Current Ammo: {currentAmmo}/{maxAmmo}");
     }
 }
