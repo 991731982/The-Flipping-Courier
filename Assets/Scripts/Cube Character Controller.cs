@@ -12,6 +12,8 @@ public class CubeCharacterController : MonoBehaviour
     private GravityController gravityController;
     private Animator animator;
 
+    private bool isCursorLocked = true; // 当前鼠标是否锁定
+
     void Start()
     {
         rb = GetComponent<Rigidbody>();
@@ -20,60 +22,21 @@ public class CubeCharacterController : MonoBehaviour
         roofjump = new Vector3(0.0f, -2.0f, 0.0f);
         animator = GetComponent<Animator>();
 
-        // 隐藏鼠标光标并锁定到游戏窗口
-        Cursor.visible = false;
-        Cursor.lockState = CursorLockMode.Locked;
-    }
+        // 初始化锁定鼠标光标
+        LockCursor();
 
-    void OnApplicationFocus(bool hasFocus)
-    {
-        // 当游戏重新获得焦点时，确保鼠标光标仍然隐藏并锁定
-        if (hasFocus)
-        {
-            Cursor.visible = false;
-            Cursor.lockState = CursorLockMode.Locked;
-        }
-    }
-
-    void OnCollisionStay(Collision collision)
-    {
-        foreach (ContactPoint contact in collision.contacts)
-        {
-            if (!gravityController.gravityFlipped && contact.normal.y > 0.5f)
-            {
-                isGrounded = true;
-                jumpTime = 0;
-            }
-            else if (gravityController.gravityFlipped && contact.normal.y < -0.5f)
-            {
-                isGrounded = true;
-                jumpTime = 0;
-            }
-        }
-    }
-
-    void OnCollisionExit(Collision collision)
-    {
-        bool exitingFromGroundOrCeiling = false;
-
-        foreach (ContactPoint contact in collision.contacts)
-        {
-            if ((!gravityController.gravityFlipped && contact.normal.y > 0.5f) ||
-                (gravityController.gravityFlipped && contact.normal.y < -0.5f))
-            {
-                exitingFromGroundOrCeiling = true;
-                break;
-            }
-        }
-
-        if (exitingFromGroundOrCeiling)
-        {
-            isGrounded = false;
-        }
+        // 监听窗口焦点变化事件
+        Application.focusChanged += OnApplicationFocusChanged;
     }
 
     void Update()
     {
+        // ESC 键切换鼠标状态
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            ToggleCursorLock();
+        }
+
         Vector3 moveDirection = Vector3.zero;
         bool isMoving = false;
 
@@ -133,7 +96,6 @@ public class CubeCharacterController : MonoBehaviour
         }
     }
 
-    // 根据移动方向旋转角色
     void RotateCharacter(Vector3 moveDirection)
     {
         // 确保移动方向非零向量
@@ -148,6 +110,79 @@ public class CubeCharacterController : MonoBehaviour
 
             // 平滑旋转
             transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * 10f);
+        }
+    }
+
+    void LockCursor()
+    {
+        Cursor.visible = false;
+        Cursor.lockState = CursorLockMode.Locked;
+        isCursorLocked = true;
+        Debug.Log("Cursor locked.");
+    }
+
+    void UnlockCursor()
+    {
+        Cursor.visible = true;
+        Cursor.lockState = CursorLockMode.None;
+        isCursorLocked = false;
+        Debug.Log("Cursor unlocked.");
+    }
+
+    void ToggleCursorLock()
+    {
+        if (isCursorLocked)
+        {
+            UnlockCursor();
+        }
+        else
+        {
+            LockCursor();
+        }
+    }
+
+    void OnApplicationFocusChanged(bool hasFocus)
+    {
+        if (hasFocus && isCursorLocked)
+        {
+            LockCursor();
+        }
+    }
+
+    void OnCollisionStay(Collision collision)
+    {
+        foreach (ContactPoint contact in collision.contacts)
+        {
+            if (!gravityController.gravityFlipped && contact.normal.y > 0.5f)
+            {
+                isGrounded = true;
+                jumpTime = 0;
+            }
+            else if (gravityController.gravityFlipped && contact.normal.y < -0.5f)
+            {
+                isGrounded = true;
+                jumpTime = 0;
+            }
+        }
+    }
+
+    void OnCollisionExit(Collision collision)
+    {
+        bool exitingFromGroundOrCeiling = false;
+
+        foreach (ContactPoint contact in collision.contacts)
+        {
+            if ((!gravityController.gravityFlipped && contact.normal.y > 0.5f) ||
+                (gravityController.gravityFlipped && contact.normal.y < -0.5f))
+            {
+                exitingFromGroundOrCeiling = true;
+                break;
+            }
+        }
+
+        if (exitingFromGroundOrCeiling)
+        {
+            isGrounded = false;
         }
     }
 }
