@@ -196,6 +196,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: -8679921383154817045, guid: e2099a967418ce948b42015cc767c9f6, type: 3}
       insertIndex: -1
       addedObject: {fileID: 452451030}
+    - targetCorrespondingSourceObject: {fileID: -8679921383154817045, guid: e2099a967418ce948b42015cc767c9f6, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1393411100}
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: e2099a967418ce948b42015cc767c9f6, type: 3}
       insertIndex: -1
@@ -318,11 +321,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 1990403706}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!4 &541552589 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 5472622940992281205, guid: e2099a967418ce948b42015cc767c9f6, type: 3}
-  m_PrefabInstance: {fileID: 64553496}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &691279959
 GameObject:
   m_ObjectHideFlags: 0
@@ -528,6 +526,38 @@ MonoBehaviour:
   pitchMax: 80
   distanceFromTarget: 10
   smoothSpeed: 0.1
+  verticalOffset: 1.8
+--- !u!1 &1393411099
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1393411100}
+  m_Layer: 0
+  m_Name: Shootpoint
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1393411100
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1393411099}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 1, z: 0, w: 0}
+  m_LocalPosition: {x: -0.224, y: 0.936, z: -0.181}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1990403706}
+  m_LocalEulerAnglesHint: {x: 0, y: 180, z: 0}
 --- !u!1 &1500109203
 GameObject:
   m_ObjectHideFlags: 0
@@ -850,10 +880,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   projectilePrefab: {fileID: 8895665198093998429, guid: dde980819e4e8c84eb30f0f6cc787e6c, type: 3}
   supplyBulletPrefab: {fileID: 8895665198093998429, guid: 24c907c8e0424b642a652100def9fb56, type: 3}
-  EnemyBulletPrefab: {fileID: 8895665198093998429, guid: 15ef574277f61994e9f6674892e57d66, type: 3}
   healBulletPrefab: {fileID: 8895665198093998429, guid: 7a2e59e625421cc40ad5d176f106bdcc, type: 3}
+  spawnEnemyBulletPrefab: {fileID: 8895665198093998429, guid: 15ef574277f61994e9f6674892e57d66, type: 3}
   projectileSpeed: 60
-  shootPoint: {fileID: 541552589}
+  shootPoint: {fileID: 1393411100}
   maxAmmo: 1000
   crosshairTexture: {fileID: 0}
   crosshairSize: 32
