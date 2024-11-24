@@ -5,17 +5,15 @@ public class PlayerHealthDisplay : MonoBehaviour
 {
     [Header("Health Settings")]
     public int maxHealth = 100; // 最大血量
-    private int currentHealth;  // 当前血量
+    private int currentHealth = 50;  // 当前血量，初始化为 50
 
     [Header("UI Settings")]
     public TextMeshProUGUI healthText; // 用于显示血量的 TMP 文本对象
 
     void Start()
     {
-        // 初始化血量
-        currentHealth = maxHealth;
-
-        // 更新血量显示
+        // 初始化血量显示
+        currentHealth = Mathf.Clamp(currentHealth, 0, maxHealth); // 确保在 0 和 maxHealth 范围内
         UpdateHealthDisplay();
     }
 
