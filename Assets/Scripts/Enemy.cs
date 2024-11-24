@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -14,12 +14,22 @@ public class Enemy : MonoBehaviour
 
     void Start()
     {
-        // Get the Rigidbody component attached to the enemy
-        rb = GetComponent<Rigidbody>();
+        // 自动找到玩家对象，假设玩家对象的 Tag 为 "Player"
+        GameObject playerObject = GameObject.FindGameObjectWithTag("Player");
+        if (playerObject != null)
+        {
+            player = playerObject.transform;
+        }
+        else
+        {
+            Debug.LogError("Player object not found! Make sure the player has the 'Player' tag.");
+        }
 
-        // Make sure Rigidbody doesn't rotate the enemy (if it's not desired)
+        // 获取 Rigidbody 组件
+        rb = GetComponent<Rigidbody>();
         rb.constraints = RigidbodyConstraints.FreezeRotation;
     }
+
 
     void Update()
     {
