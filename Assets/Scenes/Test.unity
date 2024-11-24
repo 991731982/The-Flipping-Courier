@@ -190,6 +190,18 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.y
       value: 180
       objectReference: {fileID: 0}
+    - target: {fileID: 5866666021909216657, guid: e2099a967418ce948b42015cc767c9f6, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5866666021909216657, guid: e2099a967418ce948b42015cc767c9f6, type: 3}
+      propertyPath: m_Controller
+      value: 
+      objectReference: {fileID: 9100000, guid: ee6c37c7b3c85054e95103905e5ce44b, type: 2}
+    - target: {fileID: 5866666021909216657, guid: e2099a967418ce948b42015cc767c9f6, type: 3}
+      propertyPath: m_CullingMode
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects:
@@ -887,6 +899,7 @@ MonoBehaviour:
   maxAmmo: 1000
   crosshairTexture: {fileID: 0}
   crosshairSize: 32
+  ammoText: {fileID: 0}
 --- !u!114 &1990403702
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -986,7 +999,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   maxHealth: 100
-  healthText: {fileID: 1559353438}
+  healthBar: {fileID: 0}
+  healthText: {fileID: 0}
+  fillImage: {fileID: 0}
+  animationSpeed: 10
 --- !u!114 &1990403711
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1274,6 +1290,10 @@ PrefabInstance:
       propertyPath: player
       value: 
       objectReference: {fileID: 1990403706}
+    - target: {fileID: 6658691314139758667, guid: 27129d010d8c59149b55269d42672b2b, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

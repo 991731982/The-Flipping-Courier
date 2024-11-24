@@ -8,11 +8,18 @@ public class checkPointRespawn : MonoBehaviour
     public Vector3 respawnOffset = new Vector3(0, 2, 0);  // The offset for respawn position
     private GravityController gravityController;
     private Rigidbody rb;
+    private PlayerHealthDisplay playerHealth;  // Reference to the player's health management
 
     void Start()
     {
         rb = GetComponent<Rigidbody>();
         gravityController = GetComponent<GravityController>();
+        playerHealth = GetComponent<PlayerHealthDisplay>();
+
+        if (playerHealth == null)
+        {
+            Debug.LogError("PlayerHealthDisplay component not found on player!");
+        }
 
         // Set the initial checkpoint to the player's starting position
         checkpointPosition = transform.position;
@@ -48,7 +55,12 @@ public class checkPointRespawn : MonoBehaviour
         gravityController.gravityFlipped = false;  // Set gravity state back to normal
         Physics.gravity = new Vector3(0, -20f, 0);  // Set gravity to default direction (downward)
 
-        // Optional debug message
-        Debug.Log("Gravity has been reset to normal.");
+        // Restore player's health to maximum
+        if (playerHealth != null)
+        {
+            playerHealth.RestoreFullHealth();
+        }
+
+        Debug.Log("Gravity has been reset to normal, and health restored to max.");
     }
 }

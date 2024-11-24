@@ -1,5 +1,4 @@
 ﻿using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class Enemy : MonoBehaviour
@@ -11,6 +10,8 @@ public class Enemy : MonoBehaviour
 
     private Rigidbody rb; // Reference to the Rigidbody component
     private bool isChasing = false;
+
+    private bool canDamagePlayer = true; // 是否可以对玩家造成伤害
 
     void Start()
     {
@@ -29,7 +30,6 @@ public class Enemy : MonoBehaviour
         rb = GetComponent<Rigidbody>();
         rb.constraints = RigidbodyConstraints.FreezeRotation;
     }
-
 
     void Update()
     {
@@ -53,7 +53,6 @@ public class Enemy : MonoBehaviour
         }
     }
 
-    // Method to move the enemy towards the player using Rigidbody
     void ChasePlayer()
     {
         // Calculate the direction from the enemy to the player
@@ -66,24 +65,40 @@ public class Enemy : MonoBehaviour
         rb.velocity = velocity;
     }
 
-    // Optional: Draw the chase range in the scene view for debugging
-    private void OnDrawGizmosSelected()
-    {
-        Gizmos.color = Color.red;
-        Gizmos.DrawWireSphere(transform.position, chaseRange);
-    }
-
     private void OnCollisionEnter(Collision collision)
     {
         if (collision.gameObject.CompareTag("Player"))
         {
-            // Get the player's checkpoint respawn script and call RespawnAtCheckpoint method
-            checkPointRespawn playerRespawn = collision.gameObject.GetComponent<checkPointRespawn>();
-            if (playerRespawn != null)
+            PlayerHealthDisplay playerHealth = collision.gameObject.GetComponent<PlayerHealthDisplay>();
+
+            if (playerHealth != null)
             {
-                playerRespawn.RespawnAtCheckpoint();
-                Debug.Log("Player respawned at checkpoint!.");
+                // 减少玩家生命值
+                playerHealth.TakeDamage(10);
+
+                if (playerHealth.IsDead())
+                {
+                    // 玩家死亡，触发复活逻辑
+                    checkPointRespawn playerRespawn = collision.gameObject.GetComponent<checkPointRespawn>();
+                    if (playerRespawn != null)
+                    {
+                        playerRespawn.RespawnAtCheckpoint();
+                    }
+                }
             }
         }
+    }
+
+    private IEnumerator DamageCooldown()
+    {
+        canDamagePlayer = false;
+        yield return new WaitForSeconds(5f); // 5 秒冷却时间
+        canDamagePlayer = true;
+    }
+
+    private void OnDrawGizmosSelected()
+    {
+        Gizmos.color = Color.red;
+        Gizmos.DrawWireSphere(transform.position, chaseRange);
     }
 }

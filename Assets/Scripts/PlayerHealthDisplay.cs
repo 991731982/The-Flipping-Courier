@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 
 public class PlayerHealthDisplay : MonoBehaviour
 {
@@ -9,11 +10,11 @@ public class PlayerHealthDisplay : MonoBehaviour
 
     [Header("UI Settings")]
     public Slider healthBar; // 用于显示血量的 Slider（生命值条）
-    public Text healthText;  // 可选：用于显示数值的文本
+    public TextMeshProUGUI healthText; // TMP 文本，用于显示数字生命值
     public Image fillImage;  // Slider 的填充图像
 
     [Header("Animation Settings")]
-    public float animationSpeed = 10f; // 动画速度
+    public float animationSpeed = 10f; // 血量条动画速度
 
     private float targetHealthPercentage; // 目标血量百分比
 
@@ -61,6 +62,11 @@ public class PlayerHealthDisplay : MonoBehaviour
         UpdateHealthDisplay();
     }
 
+    public bool IsDead()
+    {
+        return currentHealth <= 0;
+    }
+
     private void UpdateHealthDisplay(bool instantUpdate = false)
     {
         // 如果需要立即更新，不通过动画
@@ -75,7 +81,7 @@ public class PlayerHealthDisplay : MonoBehaviour
             }
         }
 
-        // 更新生命值文本（可选）
+        // 更新 TMP 数字显示
         if (healthText != null)
         {
             healthText.text = $"{currentHealth}/{maxHealth}";
@@ -86,5 +92,12 @@ public class PlayerHealthDisplay : MonoBehaviour
     {
         Debug.Log("Player has died!");
         // 在这里处理玩家死亡逻辑
+    }
+
+    public void RestoreFullHealth()
+    {
+        currentHealth = maxHealth; // 将血量恢复到最大
+        targetHealthPercentage = (float)currentHealth / maxHealth; // 更新目标百分比
+        UpdateHealthDisplay(true); // 立即更新 UI
     }
 }
