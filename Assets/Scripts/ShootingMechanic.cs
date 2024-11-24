@@ -4,9 +4,6 @@ public class ShootingMechanic : MonoBehaviour
 {
     [Header("Shooting Settings")]
     public GameObject projectilePrefab;  // 圆球的预制体
-    public GameObject supplyBulletPrefab;
-    public GameObject EnemyBulletPrefab;
-    public GameObject healBulletPrefab; // 恢复子弹的预制体
     public float projectileSpeed = 20f; // 圆球飞行速度
     public Transform shootPoint;        // 发射点
     public int maxAmmo = 30;            // 最大备弹量
@@ -42,46 +39,41 @@ public class ShootingMechanic : MonoBehaviour
 
     private void HandleShooting()
     {
-        if (Input.GetMouseButtonDown(0)) // 左键发射普通子弹
+        if (Input.GetMouseButtonDown(0)) // 左键按下时射击
         {
             if (currentAmmo > 0)
             {
-                ShootProjectile(projectilePrefab); // 发射普通子弹
+                ShootProjectile();
             }
             else
             {
-                Debug.Log("Out of ammo!");
+                Debug.Log("Out of ammo!"); // 子弹耗尽提示
             }
-        }
-
-        if (Input.GetMouseButtonDown(1)) // 右键发射补给子弹
-        {
-            ShootProjectile(EnemyBulletPrefab); // 发射补给子弹
         }
     }
 
-    private void ShootProjectile(GameObject bulletPrefab)
+    private void ShootProjectile()
     {
-        if (bulletPrefab == null || shootPoint == null)
+        if (projectilePrefab == null || shootPoint == null)
         {
             Debug.LogWarning("Projectile Prefab or Shoot Point is missing!");
             return;
         }
 
-        // 创建子弹
-        GameObject projectile = Instantiate(bulletPrefab, shootPoint.position, Quaternion.identity);
+        // 获取角色正前方方向
+        Vector3 shootDirection = -transform.forward;
+
+        // 创建圆球并设置其方向和速度
+        GameObject projectile = Instantiate(projectilePrefab, shootPoint.position, Quaternion.identity);
         Rigidbody rb = projectile.GetComponent<Rigidbody>();
 
         if (rb != null)
         {
-            rb.velocity = -transform.forward * projectileSpeed;
+            rb.velocity = shootDirection * projectileSpeed;
         }
 
-        // 减少弹药（仅普通子弹减少）
-        if (bulletPrefab == projectilePrefab)
-        {
-            currentAmmo--;
-        }
+        // 减少子弹数量
+        currentAmmo--;
     }
 
     private void OnGUI()
@@ -111,14 +103,5 @@ public class ShootingMechanic : MonoBehaviour
             Gizmos.color = Color.red;
             Gizmos.DrawLine(shootPoint.position, shootPoint.position + -transform.forward * 10f); // 绘制方向线
         }
-    }
-
-    public void AddAmmo(int amount)
-    {
-        currentAmmo += amount;
-
-        // 确保弹药量不会超过最大值
-        currentAmmo = Mathf.Clamp(currentAmmo, 0, maxAmmo);
-        Debug.Log($"Ammo replenished! Current Ammo: {currentAmmo}/{maxAmmo}");
     }
 }
