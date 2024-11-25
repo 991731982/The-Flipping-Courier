@@ -11,11 +11,11 @@ public class Enemy : MonoBehaviour
     private Rigidbody rb; // Reference to the Rigidbody component
     private bool isChasing = false;
 
-    private bool canDamagePlayer = true; // 是否可以对玩家造成伤害
+    private bool canDamagePlayer = true; // Whether the enemy can damage the player
 
     void Start()
     {
-        // 自动找到玩家对象，假设玩家对象的 Tag 为 "Player"
+        // Automatically find the player object with the "Player" tag
         GameObject playerObject = GameObject.FindGameObjectWithTag("Player");
         if (playerObject != null)
         {
@@ -26,7 +26,7 @@ public class Enemy : MonoBehaviour
             Debug.LogError("Player object not found! Make sure the player has the 'Player' tag.");
         }
 
-        // 获取 Rigidbody 组件
+        // Get the Rigidbody component
         rb = GetComponent<Rigidbody>();
         rb.constraints = RigidbodyConstraints.FreezeRotation;
     }
@@ -58,6 +58,13 @@ public class Enemy : MonoBehaviour
         // Calculate the direction from the enemy to the player
         Vector3 direction = (player.position - transform.position).normalized;
 
+        // Ignore the vertical component to keep the enemy level
+        direction.y = 0;
+
+        // Rotate the enemy to face the player
+        Quaternion targetRotation = Quaternion.LookRotation(direction);
+        transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * 5f);
+
         // Preserve the current Y (vertical) velocity for gravity
         Vector3 velocity = new Vector3(direction.x * moveSpeed, rb.velocity.y, direction.z * moveSpeed);
 
@@ -73,12 +80,12 @@ public class Enemy : MonoBehaviour
 
             if (playerHealth != null)
             {
-                // 减少玩家生命值
+                // Reduce player health
                 playerHealth.TakeDamage(10);
 
                 if (playerHealth.IsDead())
                 {
-                    // 玩家死亡，触发复活逻辑
+                    // Player is dead, trigger respawn logic
                     checkPointRespawn playerRespawn = collision.gameObject.GetComponent<checkPointRespawn>();
                     if (playerRespawn != null)
                     {
@@ -92,7 +99,7 @@ public class Enemy : MonoBehaviour
     private IEnumerator DamageCooldown()
     {
         canDamagePlayer = false;
-        yield return new WaitForSeconds(5f); // 5 秒冷却时间
+        yield return new WaitForSeconds(5f); // 5-second cooldown
         canDamagePlayer = true;
     }
 
