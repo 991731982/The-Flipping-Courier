@@ -8,21 +8,21 @@ public class ResettableObject : MonoBehaviour
 
     void Start()
     {
-        // Record the original position and rotation only once at the beginning of the scene
+        // 记录初始位置和旋转
         originalPosition = transform.position;
         originalRotation = transform.rotation;
 
-        // Get the Rigidbody component if it exists
+        // 获取刚体组件（如果有）
         rb = GetComponent<Rigidbody>();
     }
 
-    // Reset the object to its original position, rotation, and clear any velocity
+    // 重置物体位置和旋转
     public void ResetPosition()
     {
         transform.position = originalPosition;
         transform.rotation = originalRotation;
 
-        // If there's a Rigidbody, reset its velocity and angular velocity
+        // 重置刚体速度
         if (rb != null)
         {
             rb.velocity = Vector3.zero;

@@ -2,19 +2,26 @@ using UnityEngine;
 
 public class Detector : MonoBehaviour
 {
-    public DoorLever doorLever; // Reference to the DoorController script on the door
-    public string boxTag = "Box"; // Tag to identify the box (make sure the box has this tag)
+    public DoorLever doorLever; // DoorLever 脚本的引用
+    public string boxTag = "Box"; // 用于标识箱子的标签
 
+    // 当箱子进入触发区域时
     void OnTriggerEnter(Collider other)
     {
-        // Check if the object entering the trigger zone has the specified tag (box)
         if (other.CompareTag(boxTag))
         {
-            doorLever.OpenDoor(); // Trigger the door to open
-            Debug.Log("Box reached the bottom trigger, door is opening!");
+            doorLever.OpenDoor(); // 打开门
+            Debug.Log("Box entered, door is opening!");
+        }
+    }
 
-            // Optionally disable this trigger to prevent multiple activations
-            gameObject.SetActive(false);
+    // 当箱子离开触发区域时
+    void OnTriggerExit(Collider other)
+    {
+        if (other.CompareTag(boxTag))
+        {
+            doorLever.CloseDoor(); // 关闭门
+            Debug.Log("Box exited, door is closing!");
         }
     }
 }
