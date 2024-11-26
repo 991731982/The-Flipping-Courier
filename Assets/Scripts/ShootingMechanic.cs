@@ -10,7 +10,7 @@ public class ShootingMechanic : MonoBehaviour
     public GameObject spawnEnemyBulletPrefab; // 生成敌人的子弹预制体
     public float projectileSpeed = 20f; // 子弹飞行速度
     public Transform shootPoint;        // 发射点
-    public int maxAmmo = 30;            // 最大备弹量
+    public int maxAmmo = 99;            // 最大备弹量
     private int currentAmmo;            // 当前剩余子弹量
 
     private int specialBulletIndex = 0; // 右键轮流发射的子弹索引
@@ -36,7 +36,7 @@ public class ShootingMechanic : MonoBehaviour
         }
 
         // 初始化子弹数量
-        currentAmmo = maxAmmo;
+        currentAmmo = 10;
         UpdateAmmoText(); // 初始化显示弹药数量
     }
 
