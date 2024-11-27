@@ -55,18 +55,7 @@ public class CubeCharacterController : MonoBehaviour
         // Cap horizontal movement speed
         rb.velocity = new Vector3(moveDirection.x, rb.velocity.y, rb.velocity.z);
 
-        // 如果有移动方向，则更新角色朝向
-        if (moveDirection.x != 0)
-        {
-            Vector3 targetForward = gravityController.gravityFlipped
-                ? new Vector3(-moveDirection.x, 0, 0)
-                : new Vector3(-moveDirection.x, 0, 0);
-            Quaternion targetRotation = Quaternion.LookRotation(targetForward, transform.up);
-            transform.rotation = Quaternion.Lerp(transform.rotation, targetRotation, Time.deltaTime * 10f);
-        }
-
-
-        // 修正角色的上下方向
+        // 只修正角色的上下方向（保持左右方向不变）
         FixCharacterUpDirection();
 
         // Jump input
@@ -77,7 +66,6 @@ public class CubeCharacterController : MonoBehaviour
             isGrounded = false; // Prevent further jumps until grounded again
         }
     }
-
 
     private void FixCharacterUpDirection()
     {

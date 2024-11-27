@@ -39,9 +39,10 @@ public class GravityController : MonoBehaviour
 
     IEnumerator SmoothRotateZ(float targetZRotation)
     {
+        // 获取当前 Z 轴角度
         float currentZRotation = transform.rotation.eulerAngles.z;
 
-        // 修正角度以避免180度跳变
+        // 处理角度跨越180度的问题
         if (currentZRotation > 180f && targetZRotation == 0f)
         {
             currentZRotation -= 360f;
@@ -51,7 +52,7 @@ public class GravityController : MonoBehaviour
             targetZRotation -= 360f;
         }
 
-        // 平滑插值到目标角度，仅修改 Z 轴
+        // 平滑插值旋转到目标角度
         while (Mathf.Abs(currentZRotation - targetZRotation) > 0.1f)
         {
             currentZRotation = Mathf.Lerp(currentZRotation, targetZRotation, Time.deltaTime * rotationSpeed);
@@ -59,10 +60,9 @@ public class GravityController : MonoBehaviour
             yield return null;
         }
 
-        // 强制校准，避免误差
+        // 强制校准到精确角度，避免误差
         transform.rotation = Quaternion.Euler(transform.rotation.eulerAngles.x, transform.rotation.eulerAngles.y, targetZRotation);
     }
-
 
     bool CanFlipGravity()
     {
