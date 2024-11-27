@@ -5,18 +5,22 @@ public class CameraFollow : MonoBehaviour
     public Transform target; // 跟随的目标
     public float fixedYPosition = 5.0f; // 初始 Y 轴高度，可动态更新
     public float smoothSpeed = 0.125f; // 摄像机整体移动的平滑速度
-    public float yTransitionSpeed = 0.5f; // Y 轴过渡的速度（可在 Inspector 中调整）
-    public float offsetX = 0.0f; // X 轴的偏移量
-    private float currentOffsetZ = -10.0f; // 当前 Z 偏移量
-    private float targetOffsetZ = -10.0f; // 目标 Z 偏移量
+    public float yTransitionSpeed = 0.5f; // Y 轴过渡的速度（可调）
+    public float offsetX = 0.0f; // X 轴偏移量
+    public float offsetZ = -10.0f; // 初始 Z 偏移量，可动态更新
+
     private float currentYPosition; // 当前 Y 轴位置
+    private float currentOffsetZ; // 当前 Z 偏移量
+    private float targetOffsetZ; // 目标 Z 偏移量
     private float yVelocity = 0.0f; // 用于 SmoothDamp 的速度变量
     public float offsetTransitionSpeed = 5.0f; // Z 偏移过渡速度
 
     void Start()
     {
-        // 初始化 Y 轴位置
+        // 初始化 Y 轴位置和 Z 偏移
         currentYPosition = fixedYPosition;
+        currentOffsetZ = offsetZ; // 将初始 Z 偏移赋值为当前值
+        targetOffsetZ = offsetZ; // 初始化目标 Z 偏移
     }
 
     void LateUpdate()
@@ -24,7 +28,7 @@ public class CameraFollow : MonoBehaviour
         // 平滑过渡 Z 轴偏移量到目标值
         currentOffsetZ = Mathf.Lerp(currentOffsetZ, targetOffsetZ, Time.deltaTime * offsetTransitionSpeed);
 
-        // 平滑过渡 Y 轴高度到目标值（速度取决于 yTransitionSpeed）
+        // 平滑过渡 Y 轴高度到目标值
         currentYPosition = Mathf.SmoothDamp(currentYPosition, fixedYPosition, ref yVelocity, 1f / yTransitionSpeed);
 
         // 计算摄像机目标位置
