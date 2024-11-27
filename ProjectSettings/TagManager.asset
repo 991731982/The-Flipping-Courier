@@ -10,6 +10,7 @@ TagManager:
   - Box
   - float
   - Checkpoint
+  - UITrigger
   layers:
   - Default
   - TransparentFX
