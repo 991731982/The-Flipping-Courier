@@ -10187,6 +10187,8 @@ MonoBehaviour:
   dragDistance: 5
   followSpeed: 5
   dragOffset: {x: 1, y: 0, z: 1}
+  yOffset: 1.5
+  gravityOffset: 1.5
   groundLayer:
     serializedVersion: 2
     m_Bits: 8
@@ -16683,6 +16685,8 @@ MonoBehaviour:
   dragDistance: 5
   followSpeed: 5
   dragOffset: {x: 2.3, y: 0, z: 0}
+  yOffset: 1.5
+  gravityOffset: 1.5
   groundLayer:
     serializedVersion: 2
     m_Bits: 8
@@ -17264,6 +17268,8 @@ MonoBehaviour:
   dragDistance: 5
   followSpeed: 5
   dragOffset: {x: 1, y: 1, z: 0}
+  yOffset: 1.5
+  gravityOffset: 1.5
   groundLayer:
     serializedVersion: 2
     m_Bits: 8
@@ -23911,6 +23917,8 @@ MonoBehaviour:
   dragDistance: 5
   followSpeed: 5
   dragOffset: {x: 2.5, y: 0, z: 0}
+  yOffset: 1.5
+  gravityOffset: 1.5
   groundLayer:
     serializedVersion: 2
     m_Bits: 0
@@ -25015,9 +25023,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   player: {fileID: 10340395}
-  dragDistance: 6
+  dragDistance: 9
   followSpeed: 5
-  dragOffset: {x: 0, y: 0, z: 0}
+  dragOffset: {x: 2.75, y: 2, z: 0}
+  yOffset: -0.6
+  gravityOffset: 3
   groundLayer:
     serializedVersion: 2
     m_Bits: 0
