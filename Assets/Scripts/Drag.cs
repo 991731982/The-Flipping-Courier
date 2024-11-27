@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 
 public class Drag : MonoBehaviour
 {
@@ -6,18 +6,28 @@ public class Drag : MonoBehaviour
     public float dragDistance = 5f;        // Maximum distance to start dragging
     public float followSpeed = 5f;         // Speed factor for the object to follow the player
     public Vector3 dragOffset = new Vector3(1f, 0, 1f); // Offset from player position to prevent pushing
+    public float yOffset = 1.5f;           // Adjustable height offset for floating
+    public float gravityOffset = 1.5f;     // Offset applied when gravity is flipped
     public LayerMask groundLayer;          // Layer mask for the ground
 
     private bool isDragging = false;
     private bool isCollidingWithPlayer = false; // Flag to stop movement if in contact with player
     private Rigidbody rb;
     private bool isOnRightSide = true;     // Tracks if object was initially on the right side of the player
+    private GravityController gravityController;
 
     void Start()
     {
         rb = GetComponent<Rigidbody>();
         rb.interpolation = RigidbodyInterpolation.Interpolate; // Smooth movement
         rb.collisionDetectionMode = CollisionDetectionMode.Continuous; // Prevent passing through objects
+
+        // 获取重力控制器脚本引用
+        gravityController = player.GetComponent<GravityController>();
+        if (gravityController == null)
+        {
+            Debug.LogError("GravityController script not found on player!");
+        }
     }
 
     void Update()
@@ -27,16 +37,18 @@ public class Drag : MonoBehaviour
         {
             if (isDragging)
             {
-                // Release the object
+                // Release the object and re-enable gravity
                 isDragging = false;
+                rb.useGravity = true; // Re-enable gravity
                 Debug.Log("Object released.");
             }
             else if (Vector3.Distance(transform.position, player.position) <= dragDistance)
             {
                 // Start dragging and determine initial side
                 isDragging = true;
+                rb.useGravity = false; // Disable gravity while dragging
+                rb.velocity = Vector3.zero; // Stop any existing velocity
                 isOnRightSide = transform.position.x >= player.position.x; // Set side based on initial position
-              
             }
         }
     }
@@ -47,6 +59,7 @@ public class Drag : MonoBehaviour
         if (isDragging && Vector3.Distance(transform.position, player.position) > dragDistance)
         {
             isDragging = false;
+            rb.useGravity = true; // Re-enable gravity
             Debug.Log("Dragging stopped due to distance.");
             return;
         }
@@ -61,7 +74,10 @@ public class Drag : MonoBehaviour
                 sideOffset.x = -Mathf.Abs(dragOffset.x); // Flip offset to keep object on left
             }
 
+            // Set target position with adjustable height and gravity-based offset
             Vector3 targetPosition = player.position + sideOffset;
+            targetPosition.y += gravityController.gravityFlipped ? -gravityOffset : yOffset;
+
             Vector3 newPosition = Vector3.Lerp(transform.position, targetPosition, followSpeed * Time.fixedDeltaTime);
             rb.MovePosition(newPosition); // Use MovePosition to smoothly move the object with collision detection
         }
@@ -94,8 +110,9 @@ public class Drag : MonoBehaviour
         if (collision.transform != player && (groundLayer.value & (1 << collision.gameObject.layer)) == 0)
         {
             isDragging = false;
+            rb.useGravity = true; // Re-enable gravity
             rb.velocity = Vector3.zero; // Stop all movement
-            //Debug.Log("Object collided with another object, dragging stopped.");
+            Debug.Log("Object collided with another object, dragging stopped.");
         }
     }
 }

@@ -770,6 +770,10 @@ PrefabInstance:
       value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 6894556753486657984, guid: 5f908e007535b2b42989a1adc759f01e, type: 3}
+      propertyPath: m_Convex
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6894556753486657984, guid: 5f908e007535b2b42989a1adc759f01e, type: 3}
       propertyPath: m_Enabled
       value: 1
       objectReference: {fileID: 0}
@@ -10184,9 +10188,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   player: {fileID: 10340395}
-  dragDistance: 5
+  dragDistance: 9
   followSpeed: 5
-  dragOffset: {x: 1, y: 0, z: 1}
+  dragOffset: {x: 3, y: 0.6, z: 0}
+  yOffset: 1.5
+  gravityOffset: 2.5
   groundLayer:
     serializedVersion: 2
     m_Bits: 8
@@ -16574,6 +16580,8 @@ MonoBehaviour:
   dragDistance: 5
   followSpeed: 5
   dragOffset: {x: 2.3, y: 0, z: 0}
+  yOffset: 1.5
+  gravityOffset: 1.5
   groundLayer:
     serializedVersion: 2
     m_Bits: 8
@@ -17155,6 +17163,8 @@ MonoBehaviour:
   dragDistance: 5
   followSpeed: 5
   dragOffset: {x: 1, y: 1, z: 0}
+  yOffset: 1.5
+  gravityOffset: 1.5
   groundLayer:
     serializedVersion: 2
     m_Bits: 8
@@ -23730,6 +23740,8 @@ MonoBehaviour:
   dragDistance: 5
   followSpeed: 5
   dragOffset: {x: 2.5, y: 0, z: 0}
+  yOffset: 1.5
+  gravityOffset: 1.5
   groundLayer:
     serializedVersion: 2
     m_Bits: 0
@@ -24837,6 +24849,8 @@ MonoBehaviour:
   dragDistance: 6
   followSpeed: 5
   dragOffset: {x: 0, y: 0, z: 0}
+  yOffset: 1.5
+  gravityOffset: 1.5
   groundLayer:
     serializedVersion: 2
     m_Bits: 0
