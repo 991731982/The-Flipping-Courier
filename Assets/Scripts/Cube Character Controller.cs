@@ -16,9 +16,6 @@ public class CubeCharacterController : MonoBehaviour
         gravityController = GetComponent<GravityController>();
         groundjump = new Vector3(0.0f, 2.0f, 0.0f);
         roofjump = new Vector3(0.0f, -2.0f, 0.0f);
-
-        // 确保 Rigidbody 是物理控制的，并冻结 Z 轴旋转和位移
-        rb.constraints = RigidbodyConstraints.FreezeRotation | RigidbodyConstraints.FreezePositionZ;
     }
 
     void OnCollisionStay(Collision collision)
@@ -55,19 +52,19 @@ public class CubeCharacterController : MonoBehaviour
             moveDirection += Vector3.right * movementspeed;
         }
 
-        // 确保移动方向的 Z 轴分量为 0
-        moveDirection = new Vector3(moveDirection.x, moveDirection.y, 0f);
-
-        // 更新水平速度
-        rb.velocity = new Vector3(moveDirection.x, rb.velocity.y, 0f); // 确保 Z 轴速度为 0
+        // Cap horizontal movement speed
+        rb.velocity = new Vector3(moveDirection.x, rb.velocity.y, rb.velocity.z);
 
         // 如果有移动方向，则更新角色朝向
         if (moveDirection.x != 0)
         {
-            Vector3 targetForward = new Vector3(-moveDirection.x, 0, 0); // 确保 Z 轴分量为 0
+            Vector3 targetForward = gravityController.gravityFlipped
+                ? new Vector3(-moveDirection.x, 0, 0)
+                : new Vector3(-moveDirection.x, 0, 0);
             Quaternion targetRotation = Quaternion.LookRotation(targetForward, transform.up);
             transform.rotation = Quaternion.Lerp(transform.rotation, targetRotation, Time.deltaTime * 10f);
         }
+
 
         // 修正角色的上下方向
         FixCharacterUpDirection();
@@ -81,13 +78,14 @@ public class CubeCharacterController : MonoBehaviour
         }
     }
 
+
     private void FixCharacterUpDirection()
     {
         // 根据重力状态修正角色的上下方向，但保持左右方向
         Vector3 targetUp = gravityController.gravityFlipped ? Vector3.down : Vector3.up;
 
         // 计算修正后的方向，同时保留当前左右方向（通过forward方向）
-        Vector3 targetForward = new Vector3(transform.forward.x, 0, 0); // 确保 Z 轴分量为 0
+        Vector3 targetForward = transform.forward; // 保留当前朝向
         Quaternion targetRotation = Quaternion.LookRotation(targetForward, targetUp);
 
         // 立即或平滑设置角色的旋转
