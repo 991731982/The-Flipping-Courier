@@ -1,57 +1,50 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class CameraFollow : MonoBehaviour
 {
     public Transform target; // 跟随的目标
-    public float mouseSensitivity = 500f; // 鼠标灵敏度
-    public float pitchMin = -45f; // 最低垂直视角（向下）
-    public float pitchMax = 80f; // 最高垂直视角（向上）
-    public float distanceFromTarget = 10.0f; // 摄像机与目标的距离
-    public float smoothSpeed = 0.1f; // 平滑跟随速度
-    public float verticalOffset = 1.8f; // 上下偏移量
-
-    private float yaw = 0f; // 水平方向旋转角度
-    private float pitch = 0f; // 垂直方向旋转角度
-    private Vector3 currentVelocity; // 平滑移动的速度
+    public float fixedYPosition = 5.0f; // 初始 Y 轴高度，可动态更新
+    public float smoothSpeed = 0.125f; // 摄像机整体移动的平滑速度
+    public float yTransitionSpeed = 0.5f; // Y 轴过渡的速度（可在 Inspector 中调整）
+    public float offsetX = 0.0f; // X 轴的偏移量
+    private float currentOffsetZ = -10.0f; // 当前 Z 偏移量
+    private float targetOffsetZ = -10.0f; // 目标 Z 偏移量
+    private float currentYPosition; // 当前 Y 轴位置
+    private float yVelocity = 0.0f; // 用于 SmoothDamp 的速度变量
+    public float offsetTransitionSpeed = 5.0f; // Z 偏移过渡速度
 
     void Start()
     {
-        // 锁定鼠标到屏幕中央并隐藏鼠标
-        Cursor.lockState = CursorLockMode.Locked;
-        Cursor.visible = false;
-
-        // 初始化摄像机旋转
-        if (target != null)
-        {
-            yaw = target.eulerAngles.y;
-            pitch = target.eulerAngles.x;
-        }
+        // 初始化 Y 轴位置
+        currentYPosition = fixedYPosition;
     }
 
     void LateUpdate()
     {
-        if (target == null) return;
+        // 平滑过渡 Z 轴偏移量到目标值
+        currentOffsetZ = Mathf.Lerp(currentOffsetZ, targetOffsetZ, Time.deltaTime * offsetTransitionSpeed);
 
-        // 获取鼠标输入
-        float mouseX = Input.GetAxis("Mouse X") * mouseSensitivity * Time.unscaledDeltaTime;
-        float mouseY = Input.GetAxis("Mouse Y") * mouseSensitivity * Time.unscaledDeltaTime;
+        // 平滑过渡 Y 轴高度到目标值（速度取决于 yTransitionSpeed）
+        currentYPosition = Mathf.SmoothDamp(currentYPosition, fixedYPosition, ref yVelocity, 1f / yTransitionSpeed);
 
-        // 更新旋转角度
-        yaw += mouseX;
-        pitch -= mouseY;
-        pitch = Mathf.Clamp(pitch, pitchMin, pitchMax);
+        // 计算摄像机目标位置
+        Vector3 desiredPosition = new Vector3(
+            target.position.x + offsetX, // 跟随目标的 X 轴
+            currentYPosition,            // 平滑过渡的 Y 轴高度
+            target.position.z + currentOffsetZ // 平滑过渡的 Z 偏移量
+        );
 
-        // 计算目标位置
-        Quaternion rotation = Quaternion.Euler(pitch, yaw, 0);
-        Vector3 desiredPosition = target.position - (rotation * Vector3.forward * distanceFromTarget);
-        desiredPosition.y += verticalOffset;
+        // 平滑移动摄像机到目标位置
+        Vector3 smoothedPosition = Vector3.Lerp(transform.position, desiredPosition, smoothSpeed);
+        transform.position = smoothedPosition;
 
-        // 平滑移动摄像机
-        transform.position = Vector3.SmoothDamp(transform.position, desiredPosition, ref currentVelocity, smoothSpeed * Time.unscaledDeltaTime);
+        // 保持摄像机面朝 +Z 方向
+        transform.rotation = Quaternion.LookRotation(Vector3.forward, Vector3.up);
+    }
 
-        // 始终看向目标
-        transform.LookAt(target.position + Vector3.up * verticalOffset);
+    // 更新摄像机目标 Z 偏移的方法
+    public void UpdateCameraOffset(float newOffsetZ)
+    {
+        targetOffsetZ = newOffsetZ; // 设置新的目标 Z 偏移
     }
 }
