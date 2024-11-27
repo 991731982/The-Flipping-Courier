@@ -7,7 +7,6 @@ public class CubeCharacterController : MonoBehaviour
     public float jumpForce = 2.0f;
     public bool isGrounded;
     private Rigidbody rb;
-    public int jumpTime = 0;
     public int movementspeed = 5;
     private GravityController gravityController;
 
@@ -24,40 +23,19 @@ public class CubeCharacterController : MonoBehaviour
         foreach (ContactPoint contact in collision.contacts)
         {
             // Detect ground or roof based on gravity and ignore side contacts
-            if (!gravityController.gravityFlipped && contact.normal.y > 0.5f)
+            if ((!gravityController.gravityFlipped && contact.normal.y > 0.5f) ||
+                (gravityController.gravityFlipped && contact.normal.y < -0.5f))
             {
                 isGrounded = true;
-                jumpTime = 0;
-            }
-            else if (gravityController.gravityFlipped && contact.normal.y < -0.5f)
-            {
-                isGrounded = true;
-                jumpTime = 0;
             }
         }
     }
 
     void OnCollisionExit(Collision collision)
     {
-        bool exitingFromGroundOrCeiling = false;
-
-        foreach (ContactPoint contact in collision.contacts)
-        {
-            // Only set isGrounded to false if exiting from ground or ceiling contact
-            if ((!gravityController.gravityFlipped && contact.normal.y > 0.5f) ||
-                (gravityController.gravityFlipped && contact.normal.y < -0.5f))
-            {
-                exitingFromGroundOrCeiling = true;
-                break;
-            }
-        }
-
-        if (exitingFromGroundOrCeiling)
-        {
-            isGrounded = false;
-        }
+        // When exiting collision, set grounded to false
+        isGrounded = false;
     }
-
 
     void Update()
     {
@@ -74,32 +52,31 @@ public class CubeCharacterController : MonoBehaviour
             moveDirection += Vector3.right * movementspeed;
         }
 
-        // Cap horizontal movement speed when grounded
-        if (isGrounded && rb.velocity.magnitude > movementspeed)
-        {
-            rb.velocity = new Vector3(moveDirection.x, rb.velocity.y, rb.velocity.z);
-        }
-        else
-        {
-            rb.velocity = new Vector3(moveDirection.x, rb.velocity.y, rb.velocity.z);
-        }
+        // Cap horizontal movement speed
+        rb.velocity = new Vector3(moveDirection.x, rb.velocity.y, rb.velocity.z);
 
-        // Rotate the player to face the movement direction
-        if (moveDirection != Vector3.zero)
-        {
-            // Adjust rotation to consider character's default forward axis
-            float angle = -Mathf.Atan2(moveDirection.x, moveDirection.z) * Mathf.Rad2Deg;
-            transform.rotation = Quaternion.Euler(0, angle, 0);
-        }
+        // 只修正角色的上下方向（保持左右方向不变）
+        FixCharacterUpDirection();
 
         // Jump input
-        if (Input.GetKeyDown(KeyCode.Space) && isGrounded && jumpTime < 1)
+        if (Input.GetKeyDown(KeyCode.Space) && isGrounded)
         {
             Vector3 jumpDirection = gravityController.gravityFlipped ? roofjump : groundjump;
             rb.AddForce(jumpDirection * jumpForce, ForceMode.Impulse);
-            isGrounded = false;
-            jumpTime++;
+            isGrounded = false; // Prevent further jumps until grounded again
         }
     }
 
+    private void FixCharacterUpDirection()
+    {
+        // 根据重力状态修正角色的上下方向，但保持左右方向
+        Vector3 targetUp = gravityController.gravityFlipped ? Vector3.down : Vector3.up;
+
+        // 计算修正后的方向，同时保留当前左右方向（通过forward方向）
+        Vector3 targetForward = transform.forward; // 保留当前朝向
+        Quaternion targetRotation = Quaternion.LookRotation(targetForward, targetUp);
+
+        // 立即或平滑设置角色的旋转
+        transform.rotation = Quaternion.Lerp(transform.rotation, targetRotation, Time.deltaTime * 10f);
+    }
 }
