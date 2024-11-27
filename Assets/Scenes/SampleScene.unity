@@ -18207,6 +18207,7 @@ MonoBehaviour:
   smoothSpeed: 0.1
   yTransitionSpeed: 5
   offsetX: 0
+  offsetZ: -9.55
   offsetTransitionSpeed: 2
 --- !u!114 &963194230
 MonoBehaviour:

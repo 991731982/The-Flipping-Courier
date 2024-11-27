@@ -7,7 +7,7 @@ public class CameraFollow : MonoBehaviour
     public float smoothSpeed = 0.125f; // 摄像机整体移动的平滑速度
     public float yTransitionSpeed = 0.5f; // Y 轴过渡的速度（可调）
     public float offsetX = 0.0f; // X 轴偏移量
-    public float offsetZ = -10.0f; // 初始 Z 偏移量，可动态更新
+    [SerializeField] private float offsetZ = -10.0f; // 初始 Z 偏移量，可动态更新
 
     private float currentYPosition; // 当前 Y 轴位置
     private float currentOffsetZ; // 当前 Z 偏移量
@@ -25,6 +25,9 @@ public class CameraFollow : MonoBehaviour
 
     void LateUpdate()
     {
+        // 每帧同步 Inspector 中的 offsetZ 到目标值
+        targetOffsetZ = offsetZ;
+
         // 平滑过渡 Z 轴偏移量到目标值
         currentOffsetZ = Mathf.Lerp(currentOffsetZ, targetOffsetZ, Time.deltaTime * offsetTransitionSpeed);
 
@@ -49,6 +52,6 @@ public class CameraFollow : MonoBehaviour
     // 更新摄像机目标 Z 偏移的方法
     public void UpdateCameraOffset(float newOffsetZ)
     {
-        targetOffsetZ = newOffsetZ; // 设置新的目标 Z 偏移
+        offsetZ = newOffsetZ; // 动态更新 offsetZ
     }
 }
