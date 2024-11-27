@@ -16,9 +16,17 @@ public class ResettableObject : MonoBehaviour
         rb = GetComponent<Rigidbody>();
     }
 
-    // 重置物体位置和旋转
+    // 重置物体位置和旋转（忽略带有 Enemy 标签的物体）
     public void ResetPosition()
     {
+        // 检查是否为 Enemy 标签
+        if (CompareTag("Enemy"))
+        {
+            // 如果是 Enemy，直接返回，不进行重置
+            return;
+        }
+
+        // 重置位置和旋转
         transform.position = originalPosition;
         transform.rotation = originalRotation;
 
