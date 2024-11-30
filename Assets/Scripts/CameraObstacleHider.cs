@@ -17,11 +17,19 @@ public class CameraObstacleHandler : MonoBehaviour
         RaycastHit[] hits = Physics.RaycastAll(ray, direction.magnitude, obstacleLayer);
 
         // 恢复之前设置为透明的物体
-        foreach (GameObject obstacle in currentObstacles)
+        for (int i = currentObstacles.Count - 1; i >= 0; i--)
         {
+            GameObject obstacle = currentObstacles[i];
+
+            // 检查是否为 null，如果是 null，直接从列表中移除
+            if (obstacle == null)
+            {
+                currentObstacles.RemoveAt(i);
+                continue;
+            }
+
             ResetObstacle(obstacle);
         }
-        currentObstacles.Clear();
 
         // 处理当前检测到的障碍物
         foreach (RaycastHit hit in hits)
@@ -73,6 +81,8 @@ public class CameraObstacleHandler : MonoBehaviour
     // 恢复物体的原始材质
     void ResetObstacle(GameObject obstacle)
     {
+        if (obstacle == null) return; // 检查是否为 null
+
         Renderer renderer = obstacle.GetComponent<Renderer>();
         if (renderer != null && originalMaterials.ContainsKey(obstacle))
         {
