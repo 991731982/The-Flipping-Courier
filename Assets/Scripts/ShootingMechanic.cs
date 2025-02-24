@@ -18,10 +18,12 @@ public class ShootingMechanic : MonoBehaviour
 
     public void AddAmmo(int amount)
     {
+        int previousAmmo = currentAmmo; // 记录修改前的值
         currentAmmo += amount;
         currentAmmo = Mathf.Clamp(currentAmmo, 0, maxAmmo); // 确保弹药量在合理范围
-        UpdateAmmoText(); // 更新弹药数量显示
-        Debug.Log($"Ammo replenished! Current Ammo: {currentAmmo}/{maxAmmo}");
+
+        Debug.Log($"Ammo changed: {previousAmmo} -> {currentAmmo} (Max: {maxAmmo})");
+        UpdateAmmoText(); // 更新 UI
     }
 
     private void UpdateAmmoText()
