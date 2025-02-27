@@ -55,6 +55,6 @@ public class AntigravityChangeForce : MonoBehaviour
             rb.AddForce(new Vector3(0, modifiedAntiGravityForce, 0), ForceMode.Acceleration);
         }
 
-        UnityEngine.Debug.Log($"{gameObject.name} 當前質量: {currentMass}, 反重力強度: {modifiedAntiGravityForce}");
+       // UnityEngine.Debug.Log($"{gameObject.name} 當前質量: {currentMass}, 反重力強度: {modifiedAntiGravityForce}");
     }
 }
