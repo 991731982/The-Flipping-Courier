@@ -32,7 +32,7 @@ public class DoorOpener : MonoBehaviour
         if (playerStanding && !isOpening)
         {
             timer += Time.deltaTime;
-            if (timer >= 3f) // 站立满3秒
+            if (timer >= 1f) // 站立满3秒
             {
                 StartCoroutine(OpenDoor());
                 isOpening = true;
