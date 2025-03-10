@@ -4687,7 +4687,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   mainMenuScene: MainMenu
-  gameScene: SampleScene
+  gameScene: Protect-Level1
+  startGameSound: {fileID: 8300000, guid: bf8fa739c65b08c46b80cab4c57a91f4, type: 3}
+  backgroundMusic: {fileID: 8300000, guid: 475ea1fa127d0014f8043c413caa1efb, type: 3}
 --- !u!114 &1744800313
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -11,6 +11,7 @@ TagManager:
   - float
   - Checkpoint
   - UITrigger
+  - Trigger
   layers:
   - Default
   - TransparentFX

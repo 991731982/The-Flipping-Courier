@@ -14,4 +14,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Protect-Level1.unity
     guid: 9fc0d4010bbf28b4594072e72b8655ab
+  - enabled: 1
+    path: Assets/Scenes/SampleScene_Profiles/Scripts/test/Protect-level2.unity
+    guid: f973730b6f0f44244b88c3e434f1b129
   m_configObjects: {}
