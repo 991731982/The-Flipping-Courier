@@ -12,6 +12,8 @@ TagManager:
   - Checkpoint
   - UITrigger
   - Trigger
+  - DroppedItem
+  - Item
   layers:
   - Default
   - TransparentFX

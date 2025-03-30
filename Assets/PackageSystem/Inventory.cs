@@ -4,59 +4,38 @@ using UnityEngine;
 
 public class Inventory : MonoBehaviour
 {
-    List<Item> inventoryList;
+    List<Item> inventoryList = new List<Item>();
 
-    // delegate event for inventory updates
     public delegate void InventoryDelegate();
     public static event InventoryDelegate OnInventoryChange;
 
-    void Start()
-    {
-        inventoryList = new List<Item>();
-    }
+    public List<Item> GetInventoryList() => inventoryList;
 
-    public List<Item> GetInventoryList()
+   public void AddItem(Item item)
+{
+    foreach (Item i in inventoryList)
     {
-        return inventoryList;
-    }
-
-    public void AddItem(Item item)
-    {
-        if (inventoryList.Count == 0)
+        if (i.IsSame(item)) // 判斷是否為相同物品（可擴充）
         {
-            inventoryList.Add(item);
+            i.stackSize += item.stackSize;
+            OnInventoryChange?.Invoke();
+            return;
         }
-        else
-        {
-            bool inList = false;
-
-            foreach (Item i in inventoryList)
-            {
-                if (item.itemName == i.itemName)
-                {
-                    i.stackSize++;
-                    inList = true;
-                    break;
-                }
-            }
-
-            if (!inList)
-            {
-                inventoryList.Add(item);
-            }
-        }
-
-        OnInventoryChange?.Invoke();
     }
+
+    // 否則是新物品，加入 list
+    inventoryList.Add(item);
+    OnInventoryChange?.Invoke();
+}
 
     void OnTriggerEnter(Collider other)
     {
         if (other.CompareTag("Item"))
         {
-            ItemScript otherItemScript = other.GetComponent<ItemScript>();
-            Item otherItem = otherItemScript.GetItem();
+            ItemScript itemScript = other.GetComponent<ItemScript>();
+            Item newItem = itemScript.GetItem();
 
-            AddItem(otherItem);
+            AddItem(newItem);
             other.gameObject.SetActive(false);
         }
     }
