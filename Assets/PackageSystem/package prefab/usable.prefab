@@ -120,10 +120,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6f7600c11dd2557478889ab25b3a06a3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  itemName: usbale
+  itemName: usable
   itemIcon: {fileID: 21300000, guid: a5fbda7073f30f4429945dbd00a14d6a, type: 3}
   defaultStack: 1
   packageType: 2
+  weight: 2
 --- !u!114 &8332622701101780833
 MonoBehaviour:
   m_ObjectHideFlags: 0

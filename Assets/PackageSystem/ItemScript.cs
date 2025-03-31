@@ -10,6 +10,8 @@ public class ItemScript : MonoBehaviour
 
     private Item item;
 
+    public float weight = 1f;
+
     void Start()
 {
     item = new Item(); // ← 永遠是新的，不和其他物件共用
@@ -17,6 +19,7 @@ public class ItemScript : MonoBehaviour
     item.itemIcon = itemIcon;
     item.stackSize = defaultStack;
     item.packageType = packageType;
+    item.weight = weight;
 }
 
 
@@ -28,7 +31,9 @@ public class ItemScript : MonoBehaviour
         itemName = item.itemName,
         itemIcon = item.itemIcon,
         stackSize = item.stackSize,
-        packageType = item.packageType
+        packageType = item.packageType,
+        weight = item.weight
+        
     };
 }
 

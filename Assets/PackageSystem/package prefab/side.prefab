@@ -258,6 +258,7 @@ MonoBehaviour:
   itemIcon: {fileID: 21300000, guid: 484e0e3438daadb47b23f7d0e43e71f1, type: 3}
   defaultStack: 1
   packageType: 1
+  weight: 2
 --- !u!114 &6136486249998545370
 MonoBehaviour:
   m_ObjectHideFlags: 0

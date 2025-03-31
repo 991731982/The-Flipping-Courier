@@ -16,6 +16,8 @@ public class Item
     public int stackSize = 1;
     public PackageType packageType;
 
+     public float weight = 1f;
+
     public bool IsSame(Item other)
     {
         return itemName == other.itemName;
