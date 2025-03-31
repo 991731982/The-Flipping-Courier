@@ -1,27 +1,48 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class ItemScript : MonoBehaviour
 {
     public string itemName;
     public Sprite itemIcon;
-    public Item item;
+    public int defaultStack = 1;
 
-    // Start is called before the first frame update
+    public PackageType packageType; // ✅ 新增這個
+
+    private Item item;
+
     void Start()
-    {
-        //create a new Item
-        item = new Item();
-        
-        item.itemName = itemName;
-        item.itemIcon = itemIcon;
-    }
+{
+    item = new Item(); // ← 永遠是新的，不和其他物件共用
+    item.itemName = itemName;
+    item.itemIcon = itemIcon;
+    item.stackSize = defaultStack;
+    item.packageType = packageType;
+}
+
 
     public Item GetItem()
+{
+    // 回傳新的 item 副本
+    return new Item
     {
-        return item;
+        itemName = item.itemName,
+        itemIcon = item.itemIcon,
+        stackSize = item.stackSize,
+        packageType = item.packageType
+    };
+}
+
+
+    public void Initialize(Item source)
+    {
+        item = new Item();
+        item.itemName = source.itemName;
+        item.itemIcon = source.itemIcon;
+        item.stackSize = source.stackSize;
+        item.packageType = source.packageType;
+
+        itemName = source.itemName;
+        itemIcon = source.itemIcon;
+        packageType = source.packageType;
     }
-
-
 }

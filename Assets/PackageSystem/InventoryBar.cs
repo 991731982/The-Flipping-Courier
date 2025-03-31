@@ -3,8 +3,9 @@ using UnityEngine;
 
 public class InventoryBar : MonoBehaviour
 {
-    public InventorySlot[] slots;
+    public InventorySlot[] slots; // slot[0] = 主線包裹, slot[1] 和 slot[2] = 快捷欄
     private Inventory inventoryScript;
+    private List<Item> inventoryList;
 
     void Start()
     {
@@ -19,19 +20,38 @@ public class InventoryBar : MonoBehaviour
 
     void UpdateBar()
     {
-        // 清空所有 slot
-        foreach (var slot in slots)
-{
-    slot.ClearSlot(); // 先清空所有 slot
-}
+        inventoryList = inventoryScript.GetInventoryList();
 
-
-        // 填充當前物品
-        List<Item> inventoryList = inventoryScript.GetInventoryList();
-
-        for (int i = 0; i < inventoryList.Count && i < slots.Length; i++)
+        // 先清空所有 slot
+        foreach (InventorySlot slot in slots)
         {
-            slots[i].SetSlot(inventoryList[i]);
+            slot.ClearSlot();
         }
+
+        // 主線包裹進 slots[0]
+        for (int i = 0; i < inventoryList.Count; i++)
+        {
+            if (inventoryList[i].packageType == PackageType.Main)
+            {
+                slots[0].SetSlot(inventoryList[i]);
+                break;
+            }
+        }
+
+        // 其他物品塞入 slots[1]、slots[2]
+        int slotIndex = 1;
+        for (int i = 0; i < inventoryList.Count; i++)
+        {
+            if (inventoryList[i].packageType != PackageType.Main)
+            {
+                if (slotIndex < slots.Length)
+                {
+                    slots[slotIndex].SetSlot(inventoryList[i]);
+                    slotIndex++;
+                }
+            }
+        }
+
+        // 多餘 slot 已在最前面清空，這裡可以略過
     }
 }
