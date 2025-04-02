@@ -210,7 +210,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   scaleMultiplier: 1.2
   rotationSpeed: 30
-  planetDescription: Planet 2
+  planetDescription: Planet 2 *
   uiPanel: {fileID: 1687247561}
   uiText: {fileID: 1687247563}
 --- !u!135 &195530031
@@ -239,6 +239,19 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 486404, guid: 26e950ddae2da3a4581a7692739c06fc, type: 3}
   m_PrefabInstance: {fileID: 1937604659}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &195530037
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 195530029}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0f99ed3477806644d98c8c2a01d5a791, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  targetSceneName: Protect-Level2
 --- !u!1 &398121386
 GameObject:
   m_ObjectHideFlags: 0
@@ -847,7 +860,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   scaleMultiplier: 1.2
   rotationSpeed: 30
-  planetDescription: Planet 3
+  planetDescription: Planet 3 ***
   uiPanel: {fileID: 1687247561}
   uiText: {fileID: 1687247563}
 --- !u!135 &760037654
@@ -978,7 +991,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   scaleMultiplier: 1.2
   rotationSpeed: 30
-  planetDescription: Planet 6
+  planetDescription: Planet 6 *****
   uiPanel: {fileID: 1687247561}
   uiText: {fileID: 1687247563}
 --- !u!135 &803891037
@@ -1310,7 +1323,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   scaleMultiplier: 1.2
   rotationSpeed: 30
-  planetDescription: Planet 1
+  planetDescription: Planet 1 *
   uiPanel: {fileID: 1687247561}
   uiText: {fileID: 1687247563}
 --- !u!135 &1171828007
@@ -1371,7 +1384,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   scaleMultiplier: 1.2
   rotationSpeed: 30
-  planetDescription: Planet 4
+  planetDescription: Planet 4  ***
   uiPanel: {fileID: 1687247561}
   uiText: {fileID: 1687247563}
 --- !u!135 &1277501534
@@ -2266,6 +2279,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 126364, guid: 26e950ddae2da3a4581a7692739c06fc, type: 3}
       insertIndex: -1
       addedObject: {fileID: 195530030}
+    - targetCorrespondingSourceObject: {fileID: 126364, guid: 26e950ddae2da3a4581a7692739c06fc, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 195530037}
   m_SourcePrefab: {fileID: 100100000, guid: 26e950ddae2da3a4581a7692739c06fc, type: 3}
 --- !u!1 &2036735143
 GameObject:
@@ -2404,7 +2420,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   scaleMultiplier: 1.2
   rotationSpeed: 30
-  planetDescription: Planet 5
+  planetDescription: Planet 5  *****
   uiPanel: {fileID: 1687247561}
   uiText: {fileID: 1687247563}
 --- !u!135 &2109104382

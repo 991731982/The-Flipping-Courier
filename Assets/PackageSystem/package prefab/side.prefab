@@ -255,7 +255,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   itemName: side
-  itemIcon: {fileID: 21300000, guid: 484e0e3438daadb47b23f7d0e43e71f1, type: 3}
+  itemIcon: {fileID: 21300000, guid: a0c53522fceb9994bad2027436153807, type: 3}
   defaultStack: 1
   packageType: 1
   weight: 2
